@@ -27,7 +27,7 @@ jobs:
 
   build-fedora:
     runs-on: ubuntu-latest
-    container: 'fedora:35'
+    container: 'fedora:41'
     steps:
     - uses: actions/checkout@v4
     - name: preinstall
@@ -42,26 +42,9 @@ jobs:
         name: fedora-packages
         path: ${{ github.workspace }}/my_rel
 
-  build-centos:
-    runs-on: ubuntu-latest
-    container: 'centos:centos7'
-    steps:
-    - uses: actions/checkout@v4
-    - name: preinstall
-      run: yum install -y sudo scl-utils wget make
-    - name: create_dirs
-      run: mkdir -p ${{ github.workspace }}/my_rel ${{ github.workspace }}/my_build
-    - name: configure_and_make
-      run: ./admin/builders/centos64_build.sh -s `pwd`/.. -r ${{ github.workspace }}/my_rel -b ${{ github.workspace }}/my_build -g
-    - name: Upload packages
-      uses: actions/upload-artifact@v4
-      with:
-        name: centos-packages
-        path: ${{ github.workspace }}/my_rel
-
   build-tarball:
     runs-on: ubuntu-latest
-    container: 'ubuntu:18.04' # start with a clean environment instead of the default github runner for higher reproducibility
+    container: 'ubuntu:22.04' # start with a clean environment instead of the default github runner for higher reproducibility
     steps:
     - uses: actions/checkout@v4
     - name: preinstall
