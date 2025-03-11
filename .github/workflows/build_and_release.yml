@@ -31,7 +31,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: preinstall
-      run: dnf install -y wget rsync make libhdf5-dev
+      run: dnf install -y wget rsync make hdf5-devel 
     - name: create_dirs
       run: mkdir -p ${{ github.workspace }}/my_rel ${{ github.workspace }}/my_build
     - name: configure_and_make
