@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: preinstall
-      run: apt update && apt -y install sudo wget rsync g++ make cmake
+      run: apt update && apt -y install sudo wget rsync g++ make cmake lbzip2 libhdf5-dev
     - name: create_dirs
       run: mkdir -p ${{ github.workspace }}/my_rel ${{ github.workspace }}/my_build
     - name: configure_and_make
@@ -31,7 +31,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: preinstall
-      run: dnf install -y wget rsync make
+      run: dnf install -y wget rsync make libhdf5-dev
     - name: create_dirs
       run: mkdir -p ${{ github.workspace }}/my_rel ${{ github.workspace }}/my_build
     - name: configure_and_make
@@ -48,7 +48,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: preinstall
-      run: apt update && apt -y install sudo wget rsync g++ make cmake
+      run: apt update && apt -y install sudo wget rsync g++ make cmake lbzip2 libhdf5-dev
     - name: create_dirs
       run: mkdir -p ${{ github.workspace }}/my_rel ${{ github.workspace }}/my_build
     - name: configure_and_make
