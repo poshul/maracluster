@@ -19,12 +19,22 @@ else(MSVC)
   set(BOOST_NOWIDE "")
 endif(MSVC)
 
-find_package(Boost ${BOOST_MIN_VERSION} COMPONENTS filesystem iostreams regex thread serialization system chrono ${BOOST_NOWIDE} REQUIRED)
+# Configure Boost finding
+set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_NO_SYSTEM_PATHS OFF)
+
+# Try modern config-file package first, then fall back to module mode
+find_package(Boost ${BOOST_MIN_VERSION} COMPONENTS filesystem iostreams regex thread serialization system chrono ${BOOST_NOWIDE} CONFIG QUIET)
+if(NOT Boost_FOUND)
+  find_package(Boost ${BOOST_MIN_VERSION} COMPONENTS filesystem iostreams regex thread serialization system chrono ${BOOST_NOWIDE} MODULE REQUIRED)
+endif()
+
 if(Boost_FOUND)
   message(STATUS "Package Boost found at: ${Boost_INCLUDE_DIRS}")
-else(Boost_FOUND)
+else()
   message(FATAL_ERROR "Boost has not been found")
-endif(Boost_FOUND)
+endif()
 include_directories(${Boost_INCLUDE_DIRS})
 
 find_package(ZLIB REQUIRED)
