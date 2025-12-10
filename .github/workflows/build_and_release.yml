@@ -29,7 +29,7 @@ jobs:
             build_script: tarball64_build.sh
     container: ${{ matrix.container }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: preinstall
       run: ${{ matrix.preinstall }}
     - name: create_dirs
@@ -40,7 +40,7 @@ jobs:
 #    - name: test
 #      run: cd ../my_build/maracluster && sudo make install && make test ARGS="-V"
     - name: Upload packages
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.name }}-packages
         path: ../my_rel
@@ -48,13 +48,13 @@ jobs:
   build-osx:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: create_dirs
       run: mkdir -p ../my_rel ../my_build
     - name: configure_and_make
       run: admin/builders/osx64_build.sh -s `pwd`/.. -r `pwd`/../my_rel -b `pwd`/../my_build -g
     - name: Upload packages
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       with:
         name: osx-packages
         path: ../my_rel
@@ -65,7 +65,7 @@ jobs:
       run:
         shell: cmd
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: create_dirs
       run: CD .. || MKDIR my_rel my_build
     - name: configure_and_make
@@ -75,7 +75,7 @@ jobs:
         ECHO %base_dir%
         CALL maracluster\admin\builders\nativew64_build.bat -s %base_dir% -r %base_dir%\my_rel -b %base_dir%\my_build -g
     - name: Upload packages
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       with:
         name: win64-packages
         path: ..\my_rel
@@ -86,16 +86,18 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/rel-')
     steps:
     - name: Download artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts
     - run : |
         ls -R
         mkdir packages
-        tar -czvf packages/ubuntu.tar.gz -C ubuntu-packages $(ls ubuntu-packages)
-        tar -czvf packages/centos.tar.gz -C centos-packages $(ls centos-packages)
-        tar -czvf packages/fedora.tar.gz -C fedora-packages $(ls fedora-packages)
-        tar -czvf packages/tarball.tar.gz -C tarball-packages $(ls tarball-packages)
-        zip -j -r packages/osx.zip osx-packages/*
-        zip -j -r packages/win64.zip win64-packages/*
+        tar -czvf packages/ubuntu.tar.gz -C artifacts/ubuntu-packages $(ls artifacts/ubuntu-packages)
+        tar -czvf packages/centos.tar.gz -C artifacts/centos-packages $(ls artifacts/centos-packages)
+        tar -czvf packages/fedora.tar.gz -C artifacts/fedora-packages $(ls artifacts/fedora-packages)
+        tar -czvf packages/tarball.tar.gz -C artifacts/tarball-packages $(ls artifacts/tarball-packages)
+        zip -j -r packages/osx.zip artifacts/osx-packages/*
+        zip -j -r packages/win64.zip artifacts/win64-packages/*
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
